@@ -1,0 +1,9 @@
+name: mid_level_github_practice
+description: A practice lab for mid-level Dart development, testing, GitHub issues, pull requests, and CI.
+version: 1.0.0
+publish_to: none
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+dev_dependencies:
+  lints: ^5.0.0
+  test: ^1.25.0
