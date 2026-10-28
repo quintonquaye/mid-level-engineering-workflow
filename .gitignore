@@ -8,3 +8,5 @@ coverage/
 .env
 .env.*
 !.env.example
+.github/Developer_Supporting_Info/Reusable ticket-handling-process.md
+practice/DailyLogs/Completed_daily_work_log_template.md

@@ -5,6 +5,18 @@ import 'package:mid_level_github_practice/repositories/course_repository.dart';
 import 'package:test/test.dart';
 
 void main() {
+  //setup abstract variables for the courseController and courseAPI
+  late CourseController courseController;
+  late CourseRepository courseRepository;
+  late CourseApi courseApi;
+
+  //initialize abstrations
+  setUp((){
+    courseApi = CourseApi();
+    courseRepository = CourseRepository(courseApi);
+    courseController = CourseController(courseRepository);
+  }); 
+
   group('CourseController', () {
     test('loadCourses stores courses and clears loading state', () async {
       const course = Course(
@@ -39,6 +51,48 @@ void main() {
       expect(result, isTrue);
       expect(controller.courses, [course]);
       expect(controller.errorMessage, isNull);
+    });
+
+    //test for an empty ID and ID containing only spaces
+    test("test for an empty ID and ID containing only spaces", () async {
+      ///Arrange: initialize courseAPI + courseController + courseRepository
+      
+      ///Act: we will need to setup a course model with an empty id
+      const course = Course(
+        id: '',
+        title: 'Close-Up Photography',
+        isPublished: true,
+      );
+
+      /// call controller.addCourse()
+      ///Assert: due to an empty id, the course_repository will throw an ArgumentError
+      /// That will then be caught by the course_controller, which then will return a false value
+      var futureCourse = await courseController.addCourse(course);
+      expect(futureCourse, isFalse);
+      
+
+      ///Act we will need to setup a course model with an empty id of only spaces
+      const courseWithSpaceOnly = Course(
+        id: ' ',
+        title: 'Close-Up Photography',
+        isPublished: true,
+      );
+
+      /// call controller.addCourse()
+      var futureCourse2 = await courseController.addCourse(courseWithSpaceOnly);
+      //call getCourses
+      await courseController.loadCourses();
+      var futureCourseList = courseController.courses;
+      
+
+      ///Assert: I believe with the extra space the course_repository will not pick up the error, because a space is not considered empty.
+      ///we will pull the courses list to verify there is a single course added.
+  
+      expect(futureCourseList.length, equals(1));
+      expect(futureCourseList.first.id, equals('')); //<- is an empty value, but does not Throw in Repository
+
+      //look for false response on courseController.addCourse
+      expect(futureCourse2, isTrue);
     });
   });
 }
