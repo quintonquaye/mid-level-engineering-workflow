@@ -94,5 +94,47 @@ void main() {
       //look for false response on courseController.addCourse
       expect(futureCourse2, isTrue);
     });
+    test("Includes atleast one additional whitespace case, such as tab or newline", () async{
+       ///Arrange: re-initialize the course controller, repo and api
+      courseApi = CourseApi();
+      courseRepository = CourseRepository(courseApi);
+      courseController = CourseController(courseRepository);
+      
+      const courseWithTabbedSpace = Course(
+        id: '\t',
+        title: 'Close-Up Photography',
+        isPublished: true,
+      );
+
+      ///Act: call `controller.addCourse()`
+      await courseController.addCourse(courseWithTabbedSpace);
+
+      ///Assert: I believe tab is also not empty space and will pass the validation
+      ///set value of futureCourseList = controller.courses
+      var futureCourseList = courseController.courses;
+      expect(futureCourseList.length, equals(1));
+      expect(futureCourseList.first.id, isEmpty);
+
+      ///Arrange: re-initialize the course controller, repo and api
+      courseApi = CourseApi();
+      courseRepository = CourseRepository(courseApi);
+      courseController = CourseController(courseRepository);
+
+      ///create another course model with id as a new-line space
+      const courseWithNewLineSpace = Course(
+        id: '\n',
+        title: 'Close-Up Photography',
+        isPublished: true,
+      );
+
+      ///Act: call  `controller.addCourse()`
+      await courseController.addCourse(courseWithNewLineSpace);
+
+      //Assert: I believe a new-line also is not an empty input and will pass validation
+      var futureCourseLisWithNewLine = courseController.courses;
+      expect(futureCourseLisWithNewLine.length, equals(1)); 
+      expect(futureCourseLisWithNewLine.first.id, isEmpty);
+      
+    });
   });
 }
