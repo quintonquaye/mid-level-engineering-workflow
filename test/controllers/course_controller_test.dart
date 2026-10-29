@@ -134,7 +134,28 @@ void main() {
       var futureCourseLisWithNewLine = courseController.courses;
       expect(futureCourseLisWithNewLine.length, equals(1)); 
       expect(futureCourseLisWithNewLine.first.id, isEmpty);
-      
+    });
+
+    test("Verify that a valid ID can still be created", () async {
+      ///Arrange: initialize course API, Controller, Repository
+      ///Act: create a course model with valid course model data
+      const normalCourse = Course(
+        id: 'PHO_101',
+        title: 'Close-Up Photography',
+        isPublished: true,
+        priceInCents: 500
+      );
+      ///call courseController.addCourse()
+      await courseController.addCourse(normalCourse);
+
+      ///Assert: my assertion is that the valid course can be created and stored in the courses list
+      ///will check by getting the list of published courses and check the count is = to 1.
+      await courseController.loadCourses();
+      var publishedCourses = courseController.courses;
+      expect(publishedCourses.length, equals(1));
+      //Check the course ID, title
+      expect(publishedCourses.first.id, equals("PHO_101"));
+      expect(publishedCourses.first.title, equals("Close-Up Photography"));
     });
   });
 }
